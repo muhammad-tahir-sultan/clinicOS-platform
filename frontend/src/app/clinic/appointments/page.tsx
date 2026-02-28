@@ -2,13 +2,14 @@
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Search, Calendar, XCircle, Filter } from 'lucide-react';
+import { Plus, Search, Calendar as CalendarIcon, XCircle, Filter, LayoutGrid, List } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { appointmentsApi, patientsApi, usersApi } from '@/lib/api';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { formatDate } from '@/lib/utils';
+import { formatDate, cn } from '@/lib/utils';
+import { AppointmentCalendar } from '@/components/ui/Calendar';
 
 const apptSchema = z.object({
     patientId: z.string().min(1, 'Required'),
@@ -107,19 +108,21 @@ function AppointmentModal({ onClose }: { onClose: () => void }) {
 export default function AppointmentsPage() {
     const qc = useQueryClient();
     const [page, setPage] = useState(1);
+    const [view, setView] = useState<'list' | 'calendar'>('list');
     const [showModal, setShowModal] = useState(false);
     const [statusFilter, setStatusFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
 
     const { data, isLoading } = useQuery({
-        queryKey: ['appointments', { page, statusFilter, dateFilter }],
+        queryKey: ['appointments', { page, statusFilter, dateFilter, view }],
         queryFn: () =>
             appointmentsApi.getAll({
-                page, limit: 10,
+                page,
+                limit: view === 'calendar' ? 500 : 10,
                 status: statusFilter || undefined,
                 date: dateFilter || undefined,
             }).then((r) => r.data),
-        staleTime: 0,
+        staleTime: 1000 * 60 * 5, // 5 minutes cache
     });
 
     const cancelMutation = useMutation({
@@ -139,6 +142,11 @@ export default function AppointmentsPage() {
         NO_SHOW: 'badge-gray',
     };
 
+    const handleAppointmentClick = (appt: any) => {
+        // Here you could open a detail modal
+        console.log('Clicked appointment:', appt);
+    };
+
     return (
         <div className="animate-fade-in">
             <PageHeader
@@ -146,6 +154,28 @@ export default function AppointmentsPage() {
                 subtitle={`${meta.total ?? 0} total appointments`}
                 actions={
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <div className="flex bg-[var(--bg-secondary)] border border-[var(--border)] rounded-lg p-1 mr-2">
+                            <button
+                                onClick={() => setView('list')}
+                                className={cn(
+                                    "p-1.5 rounded-md transition-all",
+                                    view === 'list' ? "bg-[var(--accent-blue)] text-white shadow-lg" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                                )}
+                                title="List View"
+                            >
+                                <List size={18} />
+                            </button>
+                            <button
+                                onClick={() => setView('calendar')}
+                                className={cn(
+                                    "p-1.5 rounded-md transition-all",
+                                    view === 'calendar' ? "bg-[var(--accent-blue)] text-white shadow-lg" : "text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                                )}
+                                title="Calendar View"
+                            >
+                                <LayoutGrid size={18} />
+                            </button>
+                        </div>
                         <input
                             type="date"
                             className="input"
@@ -175,88 +205,95 @@ export default function AppointmentsPage() {
             />
 
             <div style={{ padding: '28px' }}>
-                <div className="glass-card" style={{ overflow: 'hidden' }}>
-                    <div className="table-container" style={{ border: 'none', borderRadius: 0 }}>
-                        {isLoading ? (
-                            <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
-                                <div className="spinner" style={{ width: '32px', height: '32px' }} />
-                            </div>
-                        ) : appointments.length === 0 ? (
-                            <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-secondary)' }}>
-                                <Calendar size={40} style={{ marginBottom: '12px', opacity: 0.3 }} />
-                                <p>No appointments found</p>
-                            </div>
-                        ) : (
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Patient</th>
-                                        <th>Doctor</th>
-                                        <th>Date & Time</th>
-                                        <th>Reason</th>
-                                        <th>Fee</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {appointments.map((appt: any) => (
-                                        <tr key={appt.id}>
-                                            <td>
-                                                <div style={{ fontWeight: '500' }}>{appt.patient?.firstName} {appt.patient?.lastName}</div>
-                                                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{appt.patient?.phone}</div>
-                                            </td>
-                                            <td>
-                                                <div style={{ fontSize: '13px' }}>Dr. {appt.doctor?.firstName} {appt.doctor?.lastName}</div>
-                                                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{appt.doctor?.specialization || 'General'}</div>
-                                            </td>
-                                            <td>
-                                                <div style={{ fontSize: '13px' }}>{formatDate(appt.date)}</div>
-                                                <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{appt.startTime} – {appt.endTime}</div>
-                                            </td>
-                                            <td style={{ fontSize: '13px', color: 'var(--text-secondary)', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {appt.reason || '—'}
-                                            </td>
-                                            <td style={{ fontSize: '13px' }}>
-                                                {appt.fee ? `$${appt.fee}` : '—'}
-                                            </td>
-                                            <td>
-                                                <span className={`badge ${statusColors[appt.status] || 'badge-gray'}`}>
-                                                    {appt.status.replace('_', ' ')}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                {!['CANCELLED', 'COMPLETED', 'NO_SHOW'].includes(appt.status) && (
-                                                    <button
-                                                        className="btn-danger"
-                                                        style={{ padding: '4px 10px', fontSize: '12px' }}
-                                                        onClick={() => {
-                                                            if (confirm('Cancel this appointment?')) cancelMutation.mutate(appt.id);
-                                                        }}
-                                                    >
-                                                        <XCircle size={12} /> Cancel
-                                                    </button>
-                                                )}
-                                            </td>
+                {view === 'calendar' ? (
+                    <AppointmentCalendar
+                        appointments={appointments}
+                        onAppointmentClick={handleAppointmentClick}
+                    />
+                ) : (
+                    <div className="glass-card" style={{ overflow: 'hidden' }}>
+                        <div className="table-container" style={{ border: 'none', borderRadius: 0 }}>
+                            {isLoading ? (
+                                <div style={{ display: 'flex', justifyContent: 'center', padding: '60px' }}>
+                                    <div className="spinner" style={{ width: '32px', height: '32px' }} />
+                                </div>
+                            ) : appointments.length === 0 ? (
+                                <div style={{ textAlign: 'center', padding: '60px', color: 'var(--text-secondary)' }}>
+                                    <CalendarIcon size={40} style={{ marginBottom: '12px', opacity: 0.3 }} />
+                                    <p>No appointments found</p>
+                                </div>
+                            ) : (
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Patient</th>
+                                            <th>Doctor</th>
+                                            <th>Date & Time</th>
+                                            <th>Reason</th>
+                                            <th>Fee</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {appointments.map((appt: any) => (
+                                            <tr key={appt.id}>
+                                                <td>
+                                                    <div style={{ fontWeight: '500' }}>{appt.patient?.firstName} {appt.patient?.lastName}</div>
+                                                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{appt.patient?.phone}</div>
+                                                </td>
+                                                <td>
+                                                    <div style={{ fontSize: '13px' }}>Dr. {appt.doctor?.firstName} {appt.doctor?.lastName}</div>
+                                                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{appt.doctor?.specialization || 'General'}</div>
+                                                </td>
+                                                <td>
+                                                    <div style={{ fontSize: '13px' }}>{formatDate(appt.date)}</div>
+                                                    <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{appt.startTime} – {appt.endTime}</div>
+                                                </td>
+                                                <td style={{ fontSize: '13px', color: 'var(--text-secondary)', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                    {appt.reason || '—'}
+                                                </td>
+                                                <td style={{ fontSize: '13px' }}>
+                                                    {appt.fee ? `$${appt.fee}` : '—'}
+                                                </td>
+                                                <td>
+                                                    <span className={`badge ${statusColors[appt.status] || 'badge-gray'}`}>
+                                                        {appt.status.replace('_', ' ')}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {!['CANCELLED', 'COMPLETED', 'NO_SHOW'].includes(appt.status) && (
+                                                        <button
+                                                            className="btn-danger"
+                                                            style={{ padding: '4px 10px', fontSize: '12px' }}
+                                                            onClick={() => {
+                                                                if (confirm('Cancel this appointment?')) cancelMutation.mutate(appt.id);
+                                                            }}
+                                                        >
+                                                            <XCircle size={12} /> Cancel
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+
+                        {meta.totalPages > 1 && (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderTop: '1px solid var(--border)' }}>
+                                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
+                                    Page {meta.page} of {meta.totalPages} · {meta.total} appointments
+                                </span>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                    <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: '13px' }} disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</button>
+                                    <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: '13px' }} disabled={page >= meta.totalPages} onClick={() => setPage((p) => p + 1)}>Next</button>
+                                </div>
+                            </div>
                         )}
                     </div>
-
-                    {meta.totalPages > 1 && (
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', borderTop: '1px solid var(--border)' }}>
-                            <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-                                Page {meta.page} of {meta.totalPages} · {meta.total} appointments
-                            </span>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: '13px' }} disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Previous</button>
-                                <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: '13px' }} disabled={page >= meta.totalPages} onClick={() => setPage((p) => p + 1)}>Next</button>
-                            </div>
-                        </div>
-                    )}
-                </div>
+                )}
             </div>
 
             {showModal && <AppointmentModal onClose={() => setShowModal(false)} />}

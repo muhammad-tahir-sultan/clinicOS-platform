@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicOS - Staff Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3c83f6",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#101722",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-6 lg:px-10 py-4 bg-white dark:bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary">
+<div class="size-8 bg-primary/10 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">health_metrics</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-xl font-bold tracking-tight">ClinicOS</h2>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-semibold transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-semibold border-b-2 border-primary pb-1" href="#">Staff</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-semibold transition-colors" href="#">Patients</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary dark:hover:text-primary text-sm font-semibold transition-colors" href="#">Schedules</a>
+</nav>
+</div>
+<div class="flex items-center gap-4 lg:gap-6">
+<label class="hidden sm:flex items-center relative min-w-48 lg:min-w-64">
+<span class="material-symbols-outlined absolute left-3 text-slate-400 text-xl">search</span>
+<input class="w-full h-10 pl-10 pr-4 rounded-xl border-none bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 text-sm" placeholder="Search anything..."/>
+</label>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center rounded-xl size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-xl size-10 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="size-10 rounded-full border-2 border-primary/20 bg-slate-200 dark:bg-slate-800 overflow-hidden" data-alt="Profile photo of the logged-in clinic administrator" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCh_qX7TLP-2FfvUIcWPLVQr5vWgeJ05FLSgYJ5MF4tt6HE3tQEKF5XfR3JsXs4qVIZH8UfBW7St2Voo3U-VXurDnYVEv4YHZvsSl3f9J-D3VRt_nS6C6aa9GlMQ4vEeIHAtKHFnbqdkiP6R00fUB96RCo3qQ9FDITu0WGPAss-wBnp71K1zF2yZ804FbM-ICcl7NY3SRoBLL_cXErjBxT7j-QBlWHdO02By80W9jX1uGW-25UCJYC5IPKy9H9nPPuNAWqeA5d2kio'); background-size: cover; background-position: center;">
+</div>
+</div>
+</header>
+<main class="flex-1 max-w-7xl mx-auto w-full px-6 py-8 flex flex-col gap-8">
+<!-- Hero Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+<div class="flex flex-col gap-2">
+<h1 class="text-slate-900 dark:text-white text-4xl font-extrabold tracking-tight">Staff Management</h1>
+<p class="text-slate-500 dark:text-slate-400 text-lg">Manage your clinical departments, medical professionals, and support staff.</p>
+</div>
+<button class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all active:scale-95">
+<span class="material-symbols-outlined">add</span>
+<span>Add Staff Member</span>
+</button>
+</div>
+<!-- Filters & Search -->
+<div class="flex flex-col gap-4">
+<div class="flex flex-wrap items-center gap-3">
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-semibold">
+<span>All Departments</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span>Cardiology</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span>Pediatrics</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-semibold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+<span>Emergency</span>
+<span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<div class="flex-1 min-w-[200px] relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+<input class="w-full h-10 pl-10 pr-4 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder:text-slate-500 focus:ring-2 focus:ring-primary/50 text-sm" placeholder="Search by name, role or ID..."/>
+</div>
+</div>
+</div>
+<!-- Staff Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Staff Card 1 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden" data-alt="Portrait of Dr. Sarah Mitchell, female doctor" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAOo2XzrvAjT1D22bL89jUqrMnIheUxd05yVDzlhxWb6D--XiY2T9RhZA-gcTC3pJE4CWC7COvaObKvqD1kAS1sTTLQVpI3J6fNDNr29HYLeBJe9uCyz5bQhRrrPeKhuIrbROIe99ak87wOHjHaJbPD5qvjLLr2LuWMi2hhVyf1j_peXZwAApSsYaz2EEY-Hh_vUvwXG2KSQdeop58GX7sh51ZJVSsH30U6-G8yWHxXd-RcRLc-kbEUykCAlHuLa518gUDfrJQYTsQ'); background-size: cover;">
+</div>
+<span class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-green-500"></span>
+                        Active
+                    </span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">Dr. Sarah Mitchell</h3>
+<p class="text-primary text-sm font-medium mb-3">Senior Cardiologist</p>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs mb-4">
+<span class="material-symbols-outlined text-base">apartment</span>
+<span>Cardiology Department</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">mail</span>
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">call</span>
+</div>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 2 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden" data-alt="Portrait of Dr. James Wilson, male pediatrician" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBWTXPoXpVZxWxbb2OtEPrc9sZEaQdfTdudv9IC531h0-fCPHdONzsMDhwLFwvbt_sB2rQlN6jbVnrjhYdndg40CEXChBi-y1ni_mI1_xvQOpr2CEMUx1fVR4PFgSBz8UjpXd039WdMRd36Io_oEgZY9hnIQ0wKh9h66xX_bqSyv7EHVwyL0k1lXfIOy7BDolGAZXhsXmJ5lcpX02cxDA3ZAQmh8BU-nrGsNoDDVTtLd934S-YMU6O_YFv13av4WhnQRWLZ9pm68Os'); background-size: cover;">
+</div>
+<span class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-green-500"></span>
+                        On Duty
+                    </span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">Dr. James Wilson</h3>
+<p class="text-primary text-sm font-medium mb-3">Lead Pediatrician</p>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs mb-4">
+<span class="material-symbols-outlined text-base">apartment</span>
+<span>Pediatrics Department</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">mail</span>
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">call</span>
+</div>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 3 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden" data-alt="Portrait of Nurse Emma Thompson, female nurse" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB5nERmqw7aX_p2zY-FMbr-Tl90QVTabTP0UDqKgQynPTBUAmqH1LzEMwK9ER5MXjh0RUMHYznUriXb9hoiR5kj7Vp7FAelu2v0YifJIvdqymL4qxUuXokxk1n5IopIY7bHDRR09QGAkcId-q4JzmDOQJfy6RZMxBnohQFtLpnd2mpCTXqDLaM_Nf9slo_XdR_aOztgMZBpSaoNTYyAk_tMzcYg888On6Scy9WK7HWGPDeCtmU64NBAyCtoMJeLiTeOD9T1fiomjhg'); background-size: cover;">
+</div>
+<span class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-orange-500/10 text-orange-500 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-orange-500"></span>
+                        Break
+                    </span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">Emma Thompson</h3>
+<p class="text-primary text-sm font-medium mb-3">ER Nurse Practitioner</p>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs mb-4">
+<span class="material-symbols-outlined text-base">apartment</span>
+<span>Emergency Unit</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">mail</span>
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">call</span>
+</div>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 4 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden" data-alt="Portrait of Marcus Chen, male receptionist" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDyeEREw9N-VRdSG3DthRTd0r2A5tuAs1fh6CFdMCF_NkWtHF-gKOddmKXGg4EC9xAV1F_mEtGajHKByLgb98X-11CDnap7iwd0m65Ts96AHvslT3siY0t0-YEh_Y8_4b_2eVaL1vGJMBGZptDEviKBxqY_jgb4z4hD-8l-hJIIwcMTHl0IyD0OqtbXCnJ4q8PoCNC1Ix027jDaAHT5VL2HKfC15ltlsyaq8Naoi5f_a7nYS00xUdQoGkQysAdvyGx2af5hoxzwEKQ'); background-size: cover;">
+</div>
+<span class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-green-500"></span>
+                        Online
+                    </span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">Marcus Chen</h3>
+<p class="text-primary text-sm font-medium mb-3">Head of Reception</p>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs mb-4">
+<span class="material-symbols-outlined text-base">apartment</span>
+<span>Administration</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">mail</span>
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">call</span>
+</div>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 5 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden" data-alt="Portrait of Dr. Elena Rodriguez, female doctor" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDuwUGd8NpZK5wmLvdGxDmVtiCQNjmJ4taz0XAG8YYrLMqCd6wuiSzWmeOEtUaefp1acRdrFPDRMYn_aNrTlCnrV88o_RaSEj1_P1HSt0b8EIWOkt_vF720v_ZxT4Wl2ORzX2mDyQ2UmACDz2bYtu_wgw8zjlvccJm6Ll-8TQ1hKLdV7WiR7qG73g2g5jW24lKtLGUgipVTbelk9ws3YavEIZAoqh2AUVkH1leSdgcNoWpRmfmMx6rZ2SuezkpHOyqLKfRC0Cxh2Ag'); background-size: cover;">
+</div>
+<span class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-500/10 text-slate-500 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-slate-500"></span>
+                        Offline
+                    </span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">Dr. Elena Rodriguez</h3>
+<p class="text-primary text-sm font-medium mb-3">Neurologist</p>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs mb-4">
+<span class="material-symbols-outlined text-base">apartment</span>
+<span>Neurology Ward</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">mail</span>
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">call</span>
+</div>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Staff Card 6 -->
+<div class="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl p-5 hover:border-primary/50 transition-all group">
+<div class="flex justify-between items-start mb-4">
+<div class="size-16 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden" data-alt="Portrait of Nurse David Park, male nurse" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCkpj8ucQJPv9_DL4YZyuiypPAdzdFLkDTKI7lHExIRk21HEuGc4sJUEAWRxZt6RjQw2aA9liPX8INmjm7dm1SOBGF_txMyRErW4fhoZkDke9mBFt4V5AjJwq1H8ytZmKv0l0BowUmIZFBktos_hcjaDlM-MEBwbf-Hy1V8bLydaBJeq4m7cettvJkSdj20uCFUQMQWUVFZvlD4O1Y9lOh-7jBVB_Yqan5BRZvzm6npCYAJKwU21OgQza0SITi29K_Iy7F9QlKTaow'); background-size: cover;">
+</div>
+<span class="flex items-center gap-1.5 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold uppercase tracking-wider">
+<span class="size-1.5 rounded-full bg-green-500"></span>
+                        On Duty
+                    </span>
+</div>
+<div>
+<h3 class="text-slate-900 dark:text-white font-bold text-lg group-hover:text-primary transition-colors">David Park</h3>
+<p class="text-primary text-sm font-medium mb-3">Surgical Nurse</p>
+<div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-xs mb-4">
+<span class="material-symbols-outlined text-base">apartment</span>
+<span>Operating Theatre</span>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+<div class="flex -space-x-2">
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">mail</span>
+<span class="material-symbols-outlined size-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 text-sm">call</span>
+</div>
+<button class="text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Add New Placeholder -->
+<div class="border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl p-5 flex flex-col items-center justify-center gap-3 hover:border-primary/50 transition-all cursor-pointer group bg-slate-50/50 dark:bg-slate-900/20">
+<div class="size-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl">add</span>
+</div>
+<p class="text-slate-500 dark:text-slate-400 font-semibold group-hover:text-primary transition-colors">Add Staff Member</p>
+</div>
+</div>
+<!-- Staff List (Table Style) - Hidden on Mobile -->
+<div class="hidden md:block bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden mt-4">
+<div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/20">
+<h3 class="font-bold text-slate-900 dark:text-white">Recent Activity</h3>
+<button class="text-primary text-sm font-semibold hover:underline">View All</button>
+</div>
+<table class="w-full text-left">
+<thead>
+<tr class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+<th class="px-6 py-4">Name</th>
+<th class="px-6 py-4">Department</th>
+<th class="px-6 py-4">Shift</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden" data-alt="Small thumbnail of Dr. Sarah Mitchell" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBNLNhmzkSXn-yBLmDLBXX1Yt4PWOzAZINcH8HXFkbw_m53SrkLioK0Zsg29V5mK0omyahGa3blTphZFlbCu8vRdoKSUyE2WRmo-sjSGUDCuMEXPhmS45I85DLCXtZeYc1NdKtPBMmTGwbHE-Agb69NE8fZ3nyE-fnjQvH4Zi71-wVcBnmaqWXKmUntItMGt234dp8e24tKsoEqFiRRsl-AW18mHLkgCGiv3Bl7pMKWVq5FW58gG2LeVcetK_dj_dNuARPFdjeAyv8'); background-size: cover;"></div>
+<span class="font-semibold text-sm">Dr. Sarah Mitchell</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Cardiology</td>
+<td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">08:00 AM - 04:00 PM</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold">ACTIVE</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-slate-400 text-xl hover:text-primary">visibility</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden" data-alt="Small thumbnail of Dr. James Wilson" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCo7vcb4G4DcRJgIjTN6zHQjyqacXQLKiHQWdqvS9j-n4Mg2EY3hZrs01JO-ldyJV5wTZxMDttpQEZ7C_w-moCmNA7FpVPThYypFz4pK-4AkKDlkb0rfD11QLQSG1To48nb81qRZGCdrp4btJOS64Yx32ayTJr2rfW30w_RNtSLBAbM0oUnYDbvcKX1qF-gLFf2yyfvhOl_Q0mZyE-aW7DVwdJc9duRlpsCrPxNkCZjTh3IatB_uMTgcZXgrvOJJxuphy02qVlVX-Q'); background-size: cover;"></div>
+<span class="font-semibold text-sm">Dr. James Wilson</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">Pediatrics</td>
+<td class="px-6 py-4 text-sm text-slate-500 dark:text-slate-400">09:00 AM - 05:00 PM</td>
+<td class="px-6 py-4">
+<span class="px-2 py-0.5 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold">ACTIVE</span>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-slate-400 text-xl hover:text-primary">visibility</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,229 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum Role {
+  SUPER_ADMIN
+  CLINIC_ADMIN
+  DOCTOR
+  RECEPTIONIST
+}
+
+enum SubscriptionPlan {
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  SUSPENDED
+  EXPIRED
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+// ============================================
+// TENANT / CLINIC
+// ============================================
+
+model Clinic {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  email     String
+  phone     String?
+  address   String?
+  logo      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscription Subscription?
+  users        User[]
+  patients     Patient[]
+  appointments Appointment[]
+  visitLogs    VisitLog[]
+  revenues     RevenueRecord[]
+
+  @@index([slug])
+  @@index([isActive])
+}
+
+// ============================================
+// SUBSCRIPTION
+// ============================================
+
+model Subscription {
+  id        String             @id @default(uuid())
+  clinicId  String             @unique
+  plan      SubscriptionPlan   @default(BASIC)
+  status    SubscriptionStatus @default(ACTIVE)
+  maxDoctors    Int            @default(2)
+  maxStaff      Int            @default(2)
+  startDate     DateTime       @default(now())
+  expiryDate    DateTime
+  billingCycle  String         @default("monthly")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  clinic Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId])
+  @@index([status])
+  @@index([expiryDate])
+}
+
+// ============================================
+// USER
+// ============================================
+
+model User {
+  id            String   @id @default(uuid())
+  clinicId      String?
+  email         String   @unique
+  password      String
+  firstName     String
+  lastName      String
+  role          Role     @default(RECEPTIONIST)
+  phone         String?
+  specialization String?
+  isActive      Boolean  @default(true)
+  refreshToken  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  clinic       Clinic?       @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  appointments Appointment[] @relation("DoctorAppointments")
+
+  @@index([clinicId])
+  @@index([email])
+  @@index([role])
+}
+
+// ============================================
+// PATIENT
+// ============================================
+
+model Patient {
+  id            String   @id @default(uuid())
+  clinicId      String
+  firstName     String
+  lastName      String
+  email         String?
+  phone         String
+  dateOfBirth   DateTime?
+  gender        Gender?
+  address       String?
+  bloodGroup    String?
+  allergies     String?
+  medicalNotes  String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  clinic       Clinic        @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  appointments Appointment[]
+  visitLogs    VisitLog[]
+
+  @@index([clinicId])
+  @@index([phone])
+}
+
+// ============================================
+// APPOINTMENT
+// ============================================
+
+model Appointment {
+  id            String            @id @default(uuid())
+  clinicId      String
+  patientId     String
+  doctorId      String
+  date          DateTime
+  startTime     String
+  endTime       String
+  status        AppointmentStatus @default(SCHEDULED)
+  reason        String?
+  notes         String?
+  fee           Float?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  clinic  Clinic  @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor  User    @relation("DoctorAppointments", fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId])
+  @@index([doctorId])
+  @@index([patientId])
+  @@index([date])
+  @@index([clinicId, date])
+  @@index([doctorId, date])
+}
+
+// ============================================
+// VISIT LOG
+// ============================================
+
+model VisitLog {
+  id          String   @id @default(uuid())
+  clinicId    String
+  patientId   String
+  diagnosis   String?
+  treatment   String?
+  prescription String?
+  vitals      Json?
+  notes       String?
+  visitDate   DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  clinic  Clinic  @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId])
+  @@index([patientId])
+  @@index([visitDate])
+}
+
+// ============================================
+// REVENUE RECORD
+// ============================================
+
+model RevenueRecord {
+  id          String   @id @default(uuid())
+  clinicId    String
+  category    String
+  amount      Float
+  description String?
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  clinic Clinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@index([clinicId])
+  @@index([date])
+  @@index([clinicId, date])
+}

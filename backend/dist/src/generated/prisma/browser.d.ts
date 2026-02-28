@@ -1,0 +1,11 @@
+import * as Prisma from './internal/prismaNamespaceBrowser.js';
+export { Prisma };
+export * as $Enums from './enums.js';
+export * from './enums.js';
+export type Clinic = Prisma.ClinicModel;
+export type Subscription = Prisma.SubscriptionModel;
+export type User = Prisma.UserModel;
+export type Patient = Prisma.PatientModel;
+export type Appointment = Prisma.AppointmentModel;
+export type VisitLog = Prisma.VisitLogModel;
+export type RevenueRecord = Prisma.RevenueRecordModel;

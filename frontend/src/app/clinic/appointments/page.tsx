@@ -9,7 +9,7 @@ import { z } from 'zod';
 import { appointmentsApi, patientsApi, usersApi } from '@/lib/api';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { formatDate, cn } from '@/lib/utils';
-import { AppointmentCalendar } from '@/components/ui/Calendar';
+import { AppointmentCalendar } from '@/components/ui/calendar';
 
 const apptSchema = z.object({
     patientId: z.string().min(1, 'Required'),

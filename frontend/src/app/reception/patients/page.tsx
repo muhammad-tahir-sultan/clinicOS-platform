@@ -8,8 +8,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { formatDate } from '@/lib/utils';
 import { PatientModal } from '@/components/patients/PatientModal';
 
-
-export default function PatientsPage() {
+export default function ReceptionPatientsPage() {
     const qc = useQueryClient();
     const [search, setSearch] = useState('');
     const [page, setPage] = useState(1);

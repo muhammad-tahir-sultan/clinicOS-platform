@@ -26,12 +26,10 @@ export declare class BookingService {
     }[]>;
     bookAppointment(slug: string, dto: PublicBookAppointmentDto): Promise<{
         id: string;
+        clinicId: string;
         createdAt: Date;
         updatedAt: Date;
-        clinicId: string;
         status: import(".prisma/client").$Enums.AppointmentStatus;
-        patientId: string;
-        doctorId: string;
         date: Date;
         startTime: string;
         endTime: string;
@@ -40,6 +38,8 @@ export declare class BookingService {
         fee: number | null;
         campaignSource: string | null;
         utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+        patientId: string;
+        doctorId: string;
     }>;
     private generateTimeSlots;
 }

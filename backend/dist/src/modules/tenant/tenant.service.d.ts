@@ -33,6 +33,7 @@ export declare class TenantService {
         slug: string;
         address: string | null;
         logo: string | null;
+        stripeAccountId: string | null;
     }>;
     findAll(page?: number, limit?: number, search?: string): Promise<{
         data: ({
@@ -65,6 +66,7 @@ export declare class TenantService {
             slug: string;
             address: string | null;
             logo: string | null;
+            stripeAccountId: string | null;
         })[];
         meta: {
             total: number;
@@ -103,6 +105,7 @@ export declare class TenantService {
         slug: string;
         address: string | null;
         logo: string | null;
+        stripeAccountId: string | null;
     }>;
     update(id: string, dto: UpdateTenantDto): Promise<{
         subscription: {
@@ -129,6 +132,7 @@ export declare class TenantService {
         slug: string;
         address: string | null;
         logo: string | null;
+        stripeAccountId: string | null;
     }>;
     suspend(id: string): Promise<{
         message: string;

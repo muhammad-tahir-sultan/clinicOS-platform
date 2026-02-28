@@ -7,6 +7,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { StatCard, StatCardSkeleton } from '@/components/ui/StatCard';
 import { useAuthStore } from '@/store/auth.store';
 import { formatDate } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function ReceptionDashboard() {
     const { user } = useAuthStore();
@@ -36,7 +37,9 @@ export default function ReceptionDashboard() {
                     {isLoading ? <StatCardSkeleton count={4} /> : (
                         <>
                             <StatCard title="Today's Appointments" value={summary?.todayAppointments ?? 0} subtitle="in queue" icon={<Calendar size={20} />} colorClass="stat-blue" iconClass="icon-blue" />
-                            <StatCard title="Total Patients" value={summary?.totalPatients ?? 0} subtitle="registered" icon={<UserCheck size={20} />} colorClass="stat-green" iconClass="icon-green" />
+                            <Link href="/reception/patients" style={{ textDecoration: 'none' }}>
+                                <StatCard title="Total Patients" value={summary?.totalPatients ?? 0} subtitle="registered" icon={<UserCheck size={20} />} colorClass="stat-green" iconClass="icon-green" />
+                            </Link>
                             <StatCard title="Completed Today" value={summary?.completedAppointments ?? 0} subtitle="this month" icon={<Clock size={20} />} colorClass="stat-cyan" iconClass="icon-cyan" />
                             <StatCard title="Cancelled" value={summary?.cancelledAppointments ?? 0} subtitle="this month" icon={<XCircle size={20} />} colorClass="stat-orange" iconClass="icon-orange" />
                         </>
@@ -102,9 +105,9 @@ export default function ReceptionDashboard() {
                                             </td>
                                             <td>
                                                 <span className={`badge ${appt.status === 'COMPLETED' ? 'badge-green' :
-                                                        appt.status === 'IN_PROGRESS' ? 'badge-purple' :
-                                                            appt.status === 'CANCELLED' ? 'badge-red' :
-                                                                appt.status === 'NO_SHOW' ? 'badge-gray' : 'badge-blue'
+                                                    appt.status === 'IN_PROGRESS' ? 'badge-purple' :
+                                                        appt.status === 'CANCELLED' ? 'badge-red' :
+                                                            appt.status === 'NO_SHOW' ? 'badge-gray' : 'badge-blue'
                                                     }`}>
                                                     {appt.status.replace('_', ' ')}
                                                 </span>

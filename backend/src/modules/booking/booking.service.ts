@@ -1,18 +1,15 @@
 import {
     Injectable,
     NotFoundException,
-    ConflictException,
     ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { PublicBookAppointmentDto } from './dto/booking.dto';
-import { AppointmentsService } from '../appointments/appointments.service';
 
 @Injectable()
 export class BookingService {
     constructor(
         private prisma: PrismaService,
-        private appointmentsService: AppointmentsService,
     ) { }
 
     async getClinicBySlug(slug: string) {
@@ -123,17 +120,7 @@ export class BookingService {
             });
         }
 
-        // Try to parse UTM parameters if present
-        let parsedUtmParams = null;
-        if (dto.utmParameters) {
-            try {
-                parsedUtmParams = JSON.parse(dto.utmParameters);
-            } catch (e) {
-                parsedUtmParams = { raw: dto.utmParameters };
-            }
-        }
-
-        // Rely on AppointmentsService helper for conflict check, and create the appointment
+        // Create appointment using current schema fields
         return this.prisma.appointment.create({
             data: {
                 clinicId: clinic.id,
@@ -143,8 +130,6 @@ export class BookingService {
                 startTime: dto.startTime,
                 endTime: dto.endTime,
                 reason: dto.reason,
-                campaignSource: dto.campaignSource,
-                utmParameters: parsedUtmParams,
             },
         });
     }

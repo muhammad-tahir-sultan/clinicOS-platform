@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Cookies from 'js-cookie';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
 
 export default function MarketingDashboard() {
     const [loading, setLoading] = useState(true);
@@ -16,13 +17,19 @@ export default function MarketingDashboard() {
     const fetchMarketingData = async () => {
         setLoading(true);
         try {
-            const token = Cookies.get('token');
+            const token = localStorage.getItem('accessToken');
             const headers = { Authorization: `Bearer ${token}` };
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - Number(dateRange));
 
-            const qrRes = await fetch('http://localhost:4000/api/marketing/qr-code', { headers });
+            const qrRes = await fetch(`${API_BASE}/marketing/qr-code`, { headers });
             const qrData = await qrRes.json();
 
-            const analyticsRes = await fetch(`http://localhost:4000/api/marketing/campaign-analytics?days=${dateRange}`, { headers });
+            const analyticsRes = await fetch(
+                `${API_BASE}/marketing/campaign-analytics?startDate=${start.toISOString()}&endDate=${end.toISOString()}`,
+                { headers },
+            );
             const analyticsData = await analyticsRes.json();
 
             setQrCodeData(qrData.dataUri);

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+
 export default function BookAppointment({ params }: { params: { slug: string } }) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -35,8 +37,8 @@ export default function BookAppointment({ params }: { params: { slug: string } }
     useEffect(() => {
         // Fetch Clinic Info and Doctors concurrently
         Promise.all([
-            fetch(`http://localhost:4000/api/booking/${params.slug}/info`).then((res) => res.json()),
-            fetch(`http://localhost:4000/api/booking/${params.slug}/doctors`).then((res) => res.json()),
+            fetch(`${API_BASE}/booking/${params.slug}/info`).then((res) => res.json()),
+            fetch(`${API_BASE}/booking/${params.slug}/doctors`).then((res) => res.json()),
         ])
             .then(([clinicData, doctorData]) => {
                 setClinic(clinicData);
@@ -49,7 +51,7 @@ export default function BookAppointment({ params }: { params: { slug: string } }
     const fetchSlots = async (doctorId: string, selectedDate: string) => {
         if (!doctorId || !selectedDate) return;
         try {
-            const res = await fetch(`http://localhost:4000/api/booking/${params.slug}/slots?doctorId=${doctorId}&date=${selectedDate}`);
+            const res = await fetch(`${API_BASE}/booking/${params.slug}/slots?doctorId=${doctorId}&date=${selectedDate}`);
             const data = await res.json();
             setAvailableSlots(data);
         } catch {
@@ -79,7 +81,7 @@ export default function BookAppointment({ params }: { params: { slug: string } }
         setBooking(true);
 
         try {
-            const res = await fetch(`http://localhost:4000/api/booking/${params.slug}/appointments`, {
+            const res = await fetch(`${API_BASE}/booking/${params.slug}/appointments`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

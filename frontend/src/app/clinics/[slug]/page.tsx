@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+
 // Fetch clinic info from the backend public API
 async function getClinicInfo(slug: string) {
-    const res = await fetch(`http://localhost:4000/api/booking/${slug}/info`, {
+    const res = await fetch(`${API_BASE}/booking/${slug}/info`, {
         next: { revalidate: 60 }, // Revalidate every minute
     });
 

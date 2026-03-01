@@ -54,7 +54,7 @@ export const tenantApi = {
     getAll: (params?: any) => api.get('/tenants', { params }),
     getOne: (id: string) => api.get(`/tenants/${id}`),
     create: (data: any) => api.post('/tenants', data),
-    update: (id: string, data: any) => api.patch(`/tenants/${id}`, data),
+    update: (id: string, data: any) => api.put(`/tenants/${id}`, data),
     activate: (id: string) => api.patch(`/tenants/${id}/activate`),
     deactivate: (id: string) => api.patch(`/tenants/${id}/deactivate`),
     stats: () => api.get('/tenants/stats'),
@@ -63,9 +63,9 @@ export const tenantApi = {
 // Subscription
 export const subscriptionApi = {
     get: (clinicId: string) => api.get(`/subscriptions/${clinicId}`),
-    update: (clinicId: string, data: any) => api.patch(`/subscriptions/${clinicId}`, data),
+    update: (clinicId: string, data: any) => api.put(`/subscriptions/${clinicId}`, data),
     renew: (clinicId: string, months: number) =>
-        api.post(`/subscriptions/${clinicId}/renew`, { months }),
+        api.patch(`/subscriptions/${clinicId}/renew`, { months }),
 };
 
 // Users
@@ -73,7 +73,7 @@ export const usersApi = {
     getAll: (params?: any) => api.get('/users', { params }),
     getOne: (id: string) => api.get(`/users/${id}`),
     create: (data: any) => api.post('/users', data),
-    update: (id: string, data: any) => api.patch(`/users/${id}`, data),
+    update: (id: string, data: any) => api.put(`/users/${id}`, data),
     delete: (id: string) => api.delete(`/users/${id}`),
     resetPassword: (id: string, data: any) => api.patch(`/users/${id}/reset-password`, data),
 };
@@ -83,7 +83,7 @@ export const patientsApi = {
     getAll: (params?: any) => api.get('/patients', { params }),
     getOne: (id: string) => api.get(`/patients/${id}`),
     create: (data: any) => api.post('/patients', data),
-    update: (id: string, data: any) => api.patch(`/patients/${id}`, data),
+    update: (id: string, data: any) => api.put(`/patients/${id}`, data),
     delete: (id: string) => api.delete(`/patients/${id}`),
     getVisitLogs: (id: string) => api.get(`/patients/${id}/visit-logs`),
     addVisitLog: (id: string, data: any) => api.post(`/patients/${id}/visit-logs`, data),
@@ -94,7 +94,7 @@ export const appointmentsApi = {
     getAll: (params?: any) => api.get('/appointments', { params }),
     getOne: (id: string) => api.get(`/appointments/${id}`),
     create: (data: any) => api.post('/appointments', data),
-    update: (id: string, data: any) => api.patch(`/appointments/${id}`, data),
+    update: (id: string, data: any) => api.put(`/appointments/${id}`, data),
     cancel: (id: string) => api.patch(`/appointments/${id}/cancel`),
     getToday: (params?: any) => api.get('/appointments/today', { params }),
 };

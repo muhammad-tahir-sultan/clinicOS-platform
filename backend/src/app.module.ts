@@ -10,6 +10,8 @@ import { UsersModule } from './modules/users/users.module';
 import { PatientsModule } from './modules/patients/patients.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { BookingModule } from './modules/booking/booking.module';
+import { MarketingModule } from './modules/marketing/marketing.module';
 import { HealthController } from './health.controller';
 import { PrismaService } from './prisma/prisma.service';
 
@@ -26,6 +28,8 @@ import { PrismaService } from './prisma/prisma.service';
     PatientsModule,
     AppointmentsModule,
     DashboardModule,
+    BookingModule,
+    MarketingModule,
   ],
   controllers: [HealthController],
   providers: [PrismaService],

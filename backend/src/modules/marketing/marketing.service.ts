@@ -44,15 +44,16 @@ export class MarketingService {
         // Set 'end' to the end of the day for inclusivity
         end.setHours(23, 59, 59, 999);
 
+        // Use `reason` as a temporary source bucket until campaign fields are added to schema.
         const appointmentsByCampaign = await this.prisma.appointment.groupBy({
-            by: ['campaignSource'],
+            by: ['reason'],
             where: {
                 clinicId,
                 date: {
                     gte: start,
                     lte: end,
                 },
-                campaignSource: {
+                reason: {
                     not: null,
                 },
             },
@@ -62,7 +63,7 @@ export class MarketingService {
         });
 
         const revenueByCampaign = await this.prisma.appointment.groupBy({
-            by: ['campaignSource'],
+            by: ['reason'],
             where: {
                 clinicId,
                 status: 'COMPLETED',
@@ -70,7 +71,7 @@ export class MarketingService {
                     gte: start,
                     lte: end,
                 },
-                campaignSource: {
+                reason: {
                     not: null,
                 },
             },
@@ -80,9 +81,9 @@ export class MarketingService {
         });
 
         const metrics = appointmentsByCampaign.map((campaign) => {
-            const rev = revenueByCampaign.find(r => r.campaignSource === campaign.campaignSource);
+            const rev = revenueByCampaign.find((r) => r.reason === campaign.reason);
             return {
-                campaignSource: campaign.campaignSource,
+                campaignSource: campaign.reason || 'unknown',
                 appointmentsBooked: campaign._count.id,
                 totalRevenue: rev?._sum.fee || 0,
             };

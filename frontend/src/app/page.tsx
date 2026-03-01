@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 
 export default function HomePage() {
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, hasHydrated } = useAuthStore();
   const router = useRouter();
 
   useEffect(() => {
+    if (!hasHydrated) return;
     if (!isAuthenticated) {
       router.replace('/login');
       return;
@@ -29,7 +30,7 @@ export default function HomePage() {
       default:
         router.replace('/login');
     }
-  }, [isAuthenticated, user, router]);
+  }, [hasHydrated, isAuthenticated, user, router]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

@@ -120,7 +120,16 @@ export class BookingService {
             });
         }
 
-        // Create appointment using current schema fields
+        // Parse UTM payload if it is a JSON string; preserve raw value otherwise.
+        let parsedUtmParams: Record<string, unknown> | null = null;
+        if (dto.utmParameters) {
+            try {
+                parsedUtmParams = JSON.parse(dto.utmParameters) as Record<string, unknown>;
+            } catch {
+                parsedUtmParams = { raw: dto.utmParameters };
+            }
+        }
+
         return this.prisma.appointment.create({
             data: {
                 clinicId: clinic.id,
@@ -130,7 +139,9 @@ export class BookingService {
                 startTime: dto.startTime,
                 endTime: dto.endTime,
                 reason: dto.reason,
-            },
+                campaignSource: dto.campaignSource,
+                utmParameters: parsedUtmParams,
+            } as any,
         });
     }
 

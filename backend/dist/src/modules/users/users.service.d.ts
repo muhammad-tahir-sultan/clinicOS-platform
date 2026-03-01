@@ -14,7 +14,7 @@ export declare class UsersService {
         isActive: boolean;
         createdAt: Date;
     }>;
-    findAll(clinicId: string, page?: number, limit?: number): Promise<{
+    findAll(clinicId: string, page?: number, limit?: number, role?: string): Promise<{
         data: {
             id: string;
             email: string;

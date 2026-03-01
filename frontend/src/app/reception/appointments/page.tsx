@@ -10,10 +10,10 @@ import { AppointmentModal } from '@/components/appointments/AppointmentModal';
 import { AppointmentsHeaderActions } from '@/components/appointments/AppointmentsHeaderActions';
 import { AppointmentsList } from '@/components/appointments/AppointmentsList';
 
-export default function AppointmentsPage() {
+export default function ReceptionAppointmentsPage() {
     const qc = useQueryClient();
     const [page, setPage] = useState(1);
-    const [view, setView] = useState<'list' | 'calendar'>('list');
+    const [view, setView] = useState<'list' | 'calendar'>('calendar'); // Default to calendar for reception
     const [showModal, setShowModal] = useState(false);
     const [statusFilter, setStatusFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');

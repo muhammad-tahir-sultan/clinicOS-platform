@@ -32,7 +32,7 @@ export declare class AuthController {
             slug: string;
         };
     }>;
-    refreshTokens(userId: string, dto: RefreshTokenDto): Promise<{
+    refreshTokens(dto: RefreshTokenDto): Promise<{
         accessToken: string;
         refreshToken: string;
     }>;

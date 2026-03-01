@@ -25,23 +25,31 @@ let SubscriptionController = class SubscriptionController {
     constructor(subscriptionService) {
         this.subscriptionService = subscriptionService;
     }
-    async findByClinicId(clinicId) {
+    async findByClinicId(clinicId, role, currentClinicId) {
+        if (role !== client_1.Role.SUPER_ADMIN && clinicId !== currentClinicId) {
+            throw new common_1.ForbiddenException('You can only access your own clinic subscription');
+        }
         return this.subscriptionService.findByClinicId(clinicId);
     }
     async update(clinicId, dto) {
         return this.subscriptionService.update(clinicId, dto);
     }
-    async renew(clinicId, months) {
+    async renew(clinicId, role, currentClinicId, months) {
+        if (role !== client_1.Role.SUPER_ADMIN && clinicId !== currentClinicId) {
+            throw new common_1.ForbiddenException('You can only renew your own clinic subscription');
+        }
         return this.subscriptionService.renewSubscription(clinicId, months || 1);
     }
 };
 exports.SubscriptionController = SubscriptionController;
 __decorate([
     (0, common_1.Get)(':clinicId'),
-    (0, decorators_1.Roles)(client_1.Role.SUPER_ADMIN),
+    (0, decorators_1.Roles)(client_1.Role.SUPER_ADMIN, client_1.Role.CLINIC_ADMIN),
     __param(0, (0, common_1.Param)('clinicId')),
+    __param(1, (0, decorators_1.CurrentUser)('role')),
+    __param(2, (0, decorators_1.CurrentUser)('clinicId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], SubscriptionController.prototype, "findByClinicId", null);
 __decorate([
@@ -55,11 +63,13 @@ __decorate([
 ], SubscriptionController.prototype, "update", null);
 __decorate([
     (0, common_1.Patch)(':clinicId/renew'),
-    (0, decorators_1.Roles)(client_1.Role.SUPER_ADMIN),
+    (0, decorators_1.Roles)(client_1.Role.SUPER_ADMIN, client_1.Role.CLINIC_ADMIN),
     __param(0, (0, common_1.Param)('clinicId')),
-    __param(1, (0, common_1.Body)('months')),
+    __param(1, (0, decorators_1.CurrentUser)('role')),
+    __param(2, (0, decorators_1.CurrentUser)('clinicId')),
+    __param(3, (0, common_1.Body)('months')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:paramtypes", [String, String, String, Number]),
     __metadata("design:returntype", Promise)
 ], SubscriptionController.prototype, "renew", null);
 exports.SubscriptionController = SubscriptionController = __decorate([

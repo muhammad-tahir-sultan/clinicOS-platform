@@ -12,13 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookingService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../../prisma/prisma.service");
-const appointments_service_1 = require("../appointments/appointments.service");
 let BookingService = class BookingService {
     prisma;
-    appointmentsService;
-    constructor(prisma, appointmentsService) {
+    constructor(prisma) {
         this.prisma = prisma;
-        this.appointmentsService = appointmentsService;
     }
     async getClinicBySlug(slug) {
         const clinic = await this.prisma.clinic.findUnique({
@@ -111,7 +108,7 @@ let BookingService = class BookingService {
             try {
                 parsedUtmParams = JSON.parse(dto.utmParameters);
             }
-            catch (e) {
+            catch {
                 parsedUtmParams = { raw: dto.utmParameters };
             }
         }
@@ -147,7 +144,6 @@ let BookingService = class BookingService {
 exports.BookingService = BookingService;
 exports.BookingService = BookingService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        appointments_service_1.AppointmentsService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], BookingService);
 //# sourceMappingURL=booking.service.js.map

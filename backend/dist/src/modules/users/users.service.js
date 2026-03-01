@@ -85,11 +85,14 @@ let UsersService = class UsersService {
         });
         return user;
     }
-    async findAll(clinicId, page = 1, limit = 10) {
+    async findAll(clinicId, page = 1, limit = 10, role) {
         const skip = (page - 1) * limit;
+        const where = { clinicId };
+        if (role)
+            where.role = role;
         const [users, total] = await Promise.all([
             this.prisma.user.findMany({
-                where: { clinicId },
+                where,
                 select: {
                     id: true,
                     email: true,
@@ -105,7 +108,7 @@ let UsersService = class UsersService {
                 take: limit,
                 orderBy: { createdAt: 'desc' },
             }),
-            this.prisma.user.count({ where: { clinicId } }),
+            this.prisma.user.count({ where }),
         ]);
         return {
             data: users,

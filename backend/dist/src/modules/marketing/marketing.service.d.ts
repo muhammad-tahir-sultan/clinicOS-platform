@@ -9,7 +9,7 @@ export declare class MarketingService {
             end: Date;
         };
         campaigns: {
-            campaignSource: string | null;
+            campaignSource: any;
             appointmentsBooked: number;
             totalRevenue: number;
         }[];

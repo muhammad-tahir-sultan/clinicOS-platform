@@ -13,11 +13,12 @@ const navItems = [
 ];
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {
-    const { isAuthenticated, user } = useAuthStore();
+    const { isAuthenticated, user, hasHydrated } = useAuthStore();
     const router = useRouter();
     const pathname = usePathname();
 
     useEffect(() => {
+        if (!hasHydrated) return;
         if (!isAuthenticated) {
             router.replace('/login');
             return;
@@ -25,8 +26,9 @@ export default function SuperAdminLayout({ children }: { children: React.ReactNo
         if (user?.role !== 'SUPER_ADMIN') {
             router.replace('/login');
         }
-    }, [isAuthenticated, user, router]);
+    }, [hasHydrated, isAuthenticated, user, router]);
 
+    if (!hasHydrated) return null;
     if (!isAuthenticated || user?.role !== 'SUPER_ADMIN') {
         return null;
     }

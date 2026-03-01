@@ -19,6 +19,8 @@ const users_module_1 = require("./modules/users/users.module");
 const patients_module_1 = require("./modules/patients/patients.module");
 const appointments_module_1 = require("./modules/appointments/appointments.module");
 const dashboard_module_1 = require("./modules/dashboard/dashboard.module");
+const booking_module_1 = require("./modules/booking/booking.module");
+const marketing_module_1 = require("./modules/marketing/marketing.module");
 const health_controller_1 = require("./health.controller");
 const prisma_service_1 = require("./prisma/prisma.service");
 let AppModule = class AppModule {
@@ -38,6 +40,8 @@ exports.AppModule = AppModule = __decorate([
             patients_module_1.PatientsModule,
             appointments_module_1.AppointmentsModule,
             dashboard_module_1.DashboardModule,
+            booking_module_1.BookingModule,
+            marketing_module_1.MarketingModule,
         ],
         controllers: [health_controller_1.HealthController],
         providers: [prisma_service_1.PrismaService],

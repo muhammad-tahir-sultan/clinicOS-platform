@@ -113,11 +113,13 @@ let MarketingService = class MarketingService {
             },
         });
         const metrics = appointmentsByCampaign.map((campaign) => {
-            const rev = revenueByCampaign.find(r => r.campaignSource === campaign.campaignSource);
+            const rev = revenueByCampaign.find((r) => r.campaignSource === campaign.campaignSource);
+            const appointmentsBooked = Number(campaign?._count?.id ?? 0);
+            const totalRevenue = Number(rev?._sum?.fee ?? 0);
             return {
-                campaignSource: campaign.campaignSource,
-                appointmentsBooked: campaign._count.id,
-                totalRevenue: rev?._sum.fee || 0,
+                campaignSource: campaign.campaignSource || 'unknown',
+                appointmentsBooked,
+                totalRevenue,
             };
         });
         return {

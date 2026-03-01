@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../../prisma/prisma.service';
 import { LoginDto, RegisterClinicDto } from './dto/auth.dto';
+import { JwtPayload } from './strategies/jwt.strategy';
 
 @Injectable()
 export class AuthService {
@@ -184,6 +185,11 @@ export class AuthService {
         return tokens;
     }
 
+    async refreshTokensByRefreshToken(refreshToken: string) {
+        const payload = await this.verifyRefreshToken(refreshToken);
+        return this.refreshTokens(payload.sub, refreshToken);
+    }
+
     async logout(userId: string) {
         await this.prisma.user.update({
             where: { id: userId },
@@ -248,5 +254,15 @@ export class AuthService {
         ]);
 
         return { accessToken, refreshToken };
+    }
+
+    private async verifyRefreshToken(refreshToken: string): Promise<JwtPayload> {
+        try {
+            return await this.jwtService.verifyAsync<JwtPayload>(refreshToken, {
+                secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+            });
+        } catch {
+            throw new UnauthorizedException('Access denied');
+        }
     }
 }

@@ -186,6 +186,10 @@ let AuthService = class AuthService {
         });
         return tokens;
     }
+    async refreshTokensByRefreshToken(refreshToken) {
+        const payload = await this.verifyRefreshToken(refreshToken);
+        return this.refreshTokens(payload.sub, refreshToken);
+    }
     async logout(userId) {
         await this.prisma.user.update({
             where: { id: userId },
@@ -239,6 +243,16 @@ let AuthService = class AuthService {
             }),
         ]);
         return { accessToken, refreshToken };
+    }
+    async verifyRefreshToken(refreshToken) {
+        try {
+            return await this.jwtService.verifyAsync(refreshToken, {
+                secret: this.configService.get('JWT_REFRESH_SECRET'),
+            });
+        }
+        catch {
+            throw new common_1.UnauthorizedException('Access denied');
+        }
     }
 };
 exports.AuthService = AuthService;

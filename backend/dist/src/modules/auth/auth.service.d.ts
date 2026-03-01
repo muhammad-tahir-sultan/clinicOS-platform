@@ -40,6 +40,10 @@ export declare class AuthService {
         accessToken: string;
         refreshToken: string;
     }>;
+    refreshTokensByRefreshToken(refreshToken: string): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }>;
     logout(userId: string): Promise<{
         message: string;
     }>;
@@ -64,4 +68,5 @@ export declare class AuthService {
         } | null;
     }>;
     private generateTokens;
+    private verifyRefreshToken;
 }

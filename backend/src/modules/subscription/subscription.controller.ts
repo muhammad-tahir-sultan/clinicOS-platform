@@ -1,8 +1,17 @@
-import { Controller, Get, Put, Patch, Param, Body, Query, UseGuards } from '@nestjs/common';
+import {
+    Controller,
+    Get,
+    Put,
+    Patch,
+    Param,
+    Body,
+    UseGuards,
+    ForbiddenException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { SubscriptionService } from './subscription.service';
 import { UpdateSubscriptionDto } from './dto/subscription.dto';
-import { Roles } from '../../common/decorators';
+import { Roles, CurrentUser } from '../../common/decorators';
 import { RolesGuard } from '../../common/guards';
 import { Role } from '@prisma/client';
 
@@ -12,8 +21,15 @@ export class SubscriptionController {
     constructor(private subscriptionService: SubscriptionService) { }
 
     @Get(':clinicId')
-    @Roles(Role.SUPER_ADMIN)
-    async findByClinicId(@Param('clinicId') clinicId: string) {
+    @Roles(Role.SUPER_ADMIN, Role.CLINIC_ADMIN)
+    async findByClinicId(
+        @Param('clinicId') clinicId: string,
+        @CurrentUser('role') role: string,
+        @CurrentUser('clinicId') currentClinicId: string,
+    ) {
+        if (role !== Role.SUPER_ADMIN && clinicId !== currentClinicId) {
+            throw new ForbiddenException('You can only access your own clinic subscription');
+        }
         return this.subscriptionService.findByClinicId(clinicId);
     }
 
@@ -27,11 +43,16 @@ export class SubscriptionController {
     }
 
     @Patch(':clinicId/renew')
-    @Roles(Role.SUPER_ADMIN)
+    @Roles(Role.SUPER_ADMIN, Role.CLINIC_ADMIN)
     async renew(
         @Param('clinicId') clinicId: string,
+        @CurrentUser('role') role: string,
+        @CurrentUser('clinicId') currentClinicId: string,
         @Body('months') months: number,
     ) {
+        if (role !== Role.SUPER_ADMIN && clinicId !== currentClinicId) {
+            throw new ForbiddenException('You can only renew your own clinic subscription');
+        }
         return this.subscriptionService.renewSubscription(clinicId, months || 1);
     }
 }

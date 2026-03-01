@@ -74,7 +74,8 @@ export const usersApi = {
     getOne: (id: string) => api.get(`/users/${id}`),
     create: (data: any) => api.post('/users', data),
     update: (id: string, data: any) => api.put(`/users/${id}`, data),
-    delete: (id: string) => api.delete(`/users/${id}`),
+    // Staff "delete" in UI is implemented as deactivation in backend.
+    delete: (id: string) => api.patch(`/users/${id}/deactivate`),
     resetPassword: (id: string, data: any) => api.patch(`/users/${id}/reset-password`, data),
 };
 

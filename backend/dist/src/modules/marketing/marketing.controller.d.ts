@@ -11,7 +11,7 @@ export declare class MarketingController {
             end: Date;
         };
         campaigns: {
-            campaignSource: string | null;
+            campaignSource: any;
             appointmentsBooked: number;
             totalRevenue: number;
         }[];

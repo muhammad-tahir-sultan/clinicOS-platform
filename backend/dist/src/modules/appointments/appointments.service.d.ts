@@ -25,9 +25,9 @@ export declare class AppointmentsService {
         endTime: string;
         reason: string | null;
         notes: string | null;
-        fee: number | null;
         campaignSource: string | null;
         utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+        fee: number | null;
         patientId: string;
         doctorId: string;
     }>;
@@ -60,9 +60,9 @@ export declare class AppointmentsService {
             endTime: string;
             reason: string | null;
             notes: string | null;
-            fee: number | null;
             campaignSource: string | null;
             utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+            fee: number | null;
             patientId: string;
             doctorId: string;
         })[];
@@ -109,9 +109,9 @@ export declare class AppointmentsService {
         endTime: string;
         reason: string | null;
         notes: string | null;
-        fee: number | null;
         campaignSource: string | null;
         utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+        fee: number | null;
         patientId: string;
         doctorId: string;
     }>;
@@ -137,9 +137,9 @@ export declare class AppointmentsService {
         endTime: string;
         reason: string | null;
         notes: string | null;
-        fee: number | null;
         campaignSource: string | null;
         utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+        fee: number | null;
         patientId: string;
         doctorId: string;
     }>;
@@ -154,9 +154,9 @@ export declare class AppointmentsService {
         endTime: string;
         reason: string | null;
         notes: string | null;
-        fee: number | null;
         campaignSource: string | null;
         utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+        fee: number | null;
         patientId: string;
         doctorId: string;
     }>;
@@ -182,9 +182,9 @@ export declare class AppointmentsService {
         endTime: string;
         reason: string | null;
         notes: string | null;
-        fee: number | null;
         campaignSource: string | null;
         utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+        fee: number | null;
         patientId: string;
         doctorId: string;
     })[]>;

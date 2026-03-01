@@ -36,11 +36,13 @@ export class UsersController {
         @CurrentUser('clinicId') clinicId: string,
         @Query('page') page?: string,
         @Query('limit') limit?: string,
+        @Query('role') role?: string,
     ) {
         return this.usersService.findAll(
             clinicId,
             page ? parseInt(page) : 1,
             limit ? parseInt(limit) : 10,
+            role,
         );
     }
 

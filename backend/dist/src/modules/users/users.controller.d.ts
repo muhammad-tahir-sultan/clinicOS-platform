@@ -14,7 +14,7 @@ export declare class UsersController {
         isActive: boolean;
         createdAt: Date;
     }>;
-    findAll(clinicId: string, page?: string, limit?: string): Promise<{
+    findAll(clinicId: string, page?: string, limit?: string, role?: string): Promise<{
         data: {
             id: string;
             email: string;

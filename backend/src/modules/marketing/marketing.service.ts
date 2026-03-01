@@ -44,26 +44,25 @@ export class MarketingService {
         // Set 'end' to the end of the day for inclusivity
         end.setHours(23, 59, 59, 999);
 
-        // Use `reason` as a temporary source bucket until campaign fields are added to schema.
         const appointmentsByCampaign = await this.prisma.appointment.groupBy({
-            by: ['reason'],
+            by: ['campaignSource'],
             where: {
                 clinicId,
                 date: {
                     gte: start,
                     lte: end,
                 },
-                reason: {
+                campaignSource: {
                     not: null,
                 },
             },
             _count: {
                 id: true,
             },
-        });
+        } as any);
 
         const revenueByCampaign = await this.prisma.appointment.groupBy({
-            by: ['reason'],
+            by: ['campaignSource'],
             where: {
                 clinicId,
                 status: 'COMPLETED',
@@ -71,21 +70,26 @@ export class MarketingService {
                     gte: start,
                     lte: end,
                 },
-                reason: {
+                campaignSource: {
                     not: null,
                 },
             },
             _sum: {
                 fee: true,
             },
-        });
+        } as any);
 
-        const metrics = appointmentsByCampaign.map((campaign) => {
-            const rev = revenueByCampaign.find((r) => r.reason === campaign.reason);
+        const metrics = (appointmentsByCampaign as any[]).map((campaign) => {
+            const rev = (revenueByCampaign as any[]).find(
+                (r) => r.campaignSource === campaign.campaignSource,
+            );
+            const appointmentsBooked = Number(campaign?._count?.id ?? 0);
+            const totalRevenue = Number(rev?._sum?.fee ?? 0);
+
             return {
-                campaignSource: campaign.reason || 'unknown',
-                appointmentsBooked: campaign._count.id,
-                totalRevenue: rev?._sum.fee || 0,
+                campaignSource: campaign.campaignSource || 'unknown',
+                appointmentsBooked,
+                totalRevenue,
             };
         });
 

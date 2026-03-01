@@ -29,8 +29,8 @@ let AuthController = class AuthController {
     async registerClinic(dto) {
         return this.authService.registerClinic(dto);
     }
-    async refreshTokens(userId, dto) {
-        return this.authService.refreshTokens(userId, dto.refreshToken);
+    async refreshTokens(dto) {
+        return this.authService.refreshTokensByRefreshToken(dto.refreshToken);
     }
     async logout(userId) {
         return this.authService.logout(userId);
@@ -57,12 +57,10 @@ __decorate([
 ], AuthController.prototype, "registerClinic", null);
 __decorate([
     (0, common_1.Post)('refresh'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, decorators_1.CurrentUser)('id')),
-    __param(1, (0, common_1.Body)()),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, auth_dto_1.RefreshTokenDto]),
+    __metadata("design:paramtypes", [auth_dto_1.RefreshTokenDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refreshTokens", null);
 __decorate([

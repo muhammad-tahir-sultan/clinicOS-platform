@@ -20,13 +20,9 @@ export class AuthController {
     }
 
     @Post('refresh')
-    @UseGuards(AuthGuard('jwt'))
     @HttpCode(HttpStatus.OK)
-    async refreshTokens(
-        @CurrentUser('id') userId: string,
-        @Body() dto: RefreshTokenDto,
-    ) {
-        return this.authService.refreshTokens(userId, dto.refreshToken);
+    async refreshTokens(@Body() dto: RefreshTokenDto) {
+        return this.authService.refreshTokensByRefreshToken(dto.refreshToken);
     }
 
     @Post('logout')

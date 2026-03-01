@@ -11,7 +11,7 @@ export class DashboardController {
     constructor(private dashboardService: DashboardService) { }
 
     @Get()
-    @Roles(Role.CLINIC_ADMIN, Role.DOCTOR)
+    @Roles(Role.CLINIC_ADMIN, Role.DOCTOR, Role.RECEPTIONIST)
     async getDashboard(@CurrentUser('clinicId') clinicId: string) {
         return this.dashboardService.getClinicDashboard(clinicId);
     }

@@ -20,8 +20,10 @@ interface AuthState {
     accessToken: string | null;
     refreshToken: string | null;
     isAuthenticated: boolean;
+    hasHydrated: boolean;
     setAuth: (user: AuthUser, accessToken: string, refreshToken: string) => void;
     clearAuth: () => void;
+    setHasHydrated: (hydrated: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -31,10 +33,12 @@ export const useAuthStore = create<AuthState>()(
             accessToken: null,
             refreshToken: null,
             isAuthenticated: false,
+            hasHydrated: false,
             setAuth: (user, accessToken, refreshToken) =>
                 set({ user, accessToken, refreshToken, isAuthenticated: true }),
             clearAuth: () =>
                 set({ user: null, accessToken: null, refreshToken: null, isAuthenticated: false }),
+            setHasHydrated: (hydrated) => set({ hasHydrated: hydrated }),
         }),
         {
             name: 'clinicos-auth',
@@ -44,6 +48,9 @@ export const useAuthStore = create<AuthState>()(
                 refreshToken: state.refreshToken,
                 isAuthenticated: state.isAuthenticated,
             }),
+            onRehydrateStorage: () => (state) => {
+                state?.setHasHydrated(true);
+            },
         },
     ),
 );

@@ -126,7 +126,7 @@ export function Sidebar({ navItems, currentPath, title, accentColor = '#3b82f6' 
                         {user ? getInitials(user.firstName, user.lastName) : 'US'}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)', truncate: true, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {user ? `${user.firstName} ${user.lastName}` : 'User'}
                         </div>
                         <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>

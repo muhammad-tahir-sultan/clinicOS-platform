@@ -1,10 +1,8 @@
 import { PrismaService } from '../../prisma/prisma.service';
 import { PublicBookAppointmentDto } from './dto/booking.dto';
-import { AppointmentsService } from '../appointments/appointments.service';
 export declare class BookingService {
     private prisma;
-    private appointmentsService;
-    constructor(prisma: PrismaService, appointmentsService: AppointmentsService);
+    constructor(prisma: PrismaService);
     getClinicBySlug(slug: string): Promise<{
         id: string;
         name: string;
@@ -35,9 +33,9 @@ export declare class BookingService {
         endTime: string;
         reason: string | null;
         notes: string | null;
-        fee: number | null;
         campaignSource: string | null;
         utmParameters: import("@prisma/client/runtime/client").JsonValue | null;
+        fee: number | null;
         patientId: string;
         doctorId: string;
     }>;

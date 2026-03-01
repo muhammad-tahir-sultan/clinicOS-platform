@@ -28,8 +28,8 @@ let UsersController = class UsersController {
     async create(clinicId, dto) {
         return this.usersService.create(clinicId, dto);
     }
-    async findAll(clinicId, page, limit) {
-        return this.usersService.findAll(clinicId, page ? parseInt(page) : 1, limit ? parseInt(limit) : 10);
+    async findAll(clinicId, page, limit, role) {
+        return this.usersService.findAll(clinicId, page ? parseInt(page) : 1, limit ? parseInt(limit) : 10, role);
     }
     async findDoctors(clinicId) {
         return this.usersService.findDoctors(clinicId);
@@ -66,8 +66,9 @@ __decorate([
     __param(0, (0, decorators_1.CurrentUser)('clinicId')),
     __param(1, (0, common_1.Query)('page')),
     __param(2, (0, common_1.Query)('limit')),
+    __param(3, (0, common_1.Query)('role')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAll", null);
 __decorate([

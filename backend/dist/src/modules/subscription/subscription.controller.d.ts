@@ -3,7 +3,7 @@ import { UpdateSubscriptionDto } from './dto/subscription.dto';
 export declare class SubscriptionController {
     private subscriptionService;
     constructor(subscriptionService: SubscriptionService);
-    findByClinicId(clinicId: string): Promise<{
+    findByClinicId(clinicId: string, role: string, currentClinicId: string): Promise<{
         clinic: {
             isActive: boolean;
             name: string;
@@ -40,7 +40,7 @@ export declare class SubscriptionController {
         expiryDate: Date;
         billingCycle: string;
     }>;
-    renew(clinicId: string, months: number): Promise<{
+    renew(clinicId: string, role: string, currentClinicId: string, months: number): Promise<{
         id: string;
         clinicId: string;
         createdAt: Date;
